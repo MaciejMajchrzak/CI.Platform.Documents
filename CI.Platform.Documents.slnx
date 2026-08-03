@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CI.Platform.Documents.Domain/CI.Platform.Documents.Domain.csproj" />
+    <Project Path="src/CI.Platform.Documents.Core/CI.Platform.Documents.Core.csproj" />
+    <Project Path="src/CI.Platform.Documents.Infrastructure/CI.Platform.Documents.Infrastructure.csproj" />
+    <Project Path="src/CI.Platform.Documents.API/CI.Platform.Documents.API.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CI.Platform.Documents.Tests/CI.Platform.Documents.Tests.csproj" />
+  </Folder>
+</Solution>
