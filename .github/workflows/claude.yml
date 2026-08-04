@@ -1,0 +1,18 @@
+name: claude
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pipeline:
+    uses: MaciejMajchrzak/CI.Infra/.github/workflows/claude-service.yml@main
+    permissions:
+      contents: read
+      packages: write
+    with:
+      project-name: ci-platform-documents
+      api-project: src/CI.Platform.Documents.API/CI.Platform.Documents.API.csproj
+    secrets: inherit
