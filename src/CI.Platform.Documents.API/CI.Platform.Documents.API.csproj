@@ -9,8 +9,8 @@
     <ProjectReference Include="..\CI.Platform.Documents.Infrastructure\CI.Platform.Documents.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CI.Kernel.Http" Version="1.3.0" />
-    <PackageReference Include="CI.Kernel.InMemory" Version="1.3.0" />
+    <PackageReference Include="CI.Kernel.Http" Version="1.4.0" />
+    <PackageReference Include="CI.Kernel.InMemory" Version="1.4.0" />
     <PackageReference Include="CI.Kernel.Redis" Version="1.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.17.0" />

@@ -3,7 +3,6 @@ ARG DOTNET_VERSION=10.0
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS build
 WORKDIR /src
 
-ARG BAGET_URL
 ARG API_PROJECT=src/CI.Platform.Documents.API/CI.Platform.Documents.API.csproj
 
 COPY nuget.config .
@@ -11,7 +10,12 @@ COPY ["src/CI.Platform.Documents.Domain/CI.Platform.Documents.Domain.csproj",   
 COPY ["src/CI.Platform.Documents.Core/CI.Platform.Documents.Core.csproj",                     "src/CI.Platform.Documents.Core/"]
 COPY ["src/CI.Platform.Documents.Infrastructure/CI.Platform.Documents.Infrastructure.csproj", "src/CI.Platform.Documents.Infrastructure/"]
 COPY ["src/CI.Platform.Documents.API/CI.Platform.Documents.API.csproj",                       "src/CI.Platform.Documents.API/"]
-RUN dotnet restore ${API_PROJECT}
+RUN --mount=type=secret,id=github_token \
+    dotnet nuget update source github \
+      --username ci \
+      --password "$(cat /run/secrets/github_token)" \
+      --store-password-in-clear-text && \
+    dotnet restore ${API_PROJECT}
 
 COPY . .
 RUN dotnet publish ${API_PROJECT} -c Release -o /app/publish --no-restore

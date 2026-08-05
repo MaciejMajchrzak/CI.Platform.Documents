@@ -1,5 +1,6 @@
 using MassTransit;
 using CI.Kernel;
+using CI.Kernel.Http;
 using CI.Kernel.InMemory;
 using CI.Kernel.Redis;
 using CI.Platform.Documents.Core;
@@ -18,8 +19,33 @@ public static class ServiceExtensions
 {
     public static IServiceCollection AddDocumentsServices(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDbContext<DocumentsDbContext>(opts =>
-            opts.UseNpgsql(config.GetConnectionString("Documents")));
+        // Tenant context from JWT claims
+        services.AddHttpTenantContext();
+
+        // Data-plane: per-tenant DB routing
+        var tenantsUrl = config["Services:Tenants"];
+        if (!string.IsNullOrEmpty(tenantsUrl))
+        {
+            services.AddHttpTenantDbRouter(tenantsUrl);
+        }
+        else
+        {
+            var cs = config.GetConnectionString("Documents") ?? string.Empty;
+            services.AddSingleton<ITenantDbRouter>(new NullTenantDbRouter(cs));
+        }
+
+        services.AddSingleton<ITenantDbContextFactory<DocumentsDbContext>>(sp =>
+            new TenantDbContextFactory<DocumentsDbContext>(
+                sp.GetRequiredService<ITenantDbRouter>(),
+                opts => new DocumentsDbContext(opts),
+                "documents"));
+
+        services.AddScoped(sp =>
+        {
+            var factory   = sp.GetRequiredService<ITenantDbContextFactory<DocumentsDbContext>>();
+            var tenantCtx = sp.GetRequiredService<ITenantContext>();
+            return factory.CreateAsync(tenantCtx.TenantId).GetAwaiter().GetResult();
+        });
 
         services.AddScoped<IDocumentsRepository, DocumentsRepository>();
         services.AddScoped<IDocumentsOutbox, DocumentsOutbox>();
