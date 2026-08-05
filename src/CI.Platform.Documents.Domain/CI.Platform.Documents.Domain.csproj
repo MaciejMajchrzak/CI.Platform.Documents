@@ -5,6 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CI.Kernel" Version="1.2.0" />
+    <PackageReference Include="CI.Kernel" Version="1.3.0" />
   </ItemGroup>
 </Project>
